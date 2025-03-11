@@ -17,9 +17,13 @@
     margin-left: 110px;
 
     h3 {
+      width: 110px;
       margin: 0;
       padding: 0;
       color: #3877ee;
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-start;
     }
 
     p {
@@ -83,6 +87,7 @@
       margin-left: 10px;
       font-size: 16px;
       line-height: 24px;
+      margin-top: 30px;
     }
   }
   .button-container {
@@ -104,8 +109,9 @@
   position: fixed;
   width: 400px;
   height: 20px;
-  top: 560px;
+  top: 550px;
   right: 21px;
   padding: 10px;
   text-align: center;
+  z-index: 2;
 }

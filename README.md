@@ -1,6 +1,6 @@
 # ТЗ для Only
 
-Запустить можно скачав или скачать архив напрямую из репозитория
+Запустить можно через git clone https://github.com/Efra2m/TzOnly.git или скачать архив
 
 Далее нужно подтянуть все необходимые зависимости через
 
@@ -10,5 +10,5 @@ npm install
 
 npm start
 
-Runs the app in the development mode.\
+Runs the app in the development mode.
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.

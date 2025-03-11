@@ -5,6 +5,8 @@ import { event } from "./eventsData";
 import Slider from "../Slider/Slider";
 import { IEvent } from "./eventsData";
 import TimelineControls from "../TimelineControls/TimelineControls";
+import ThemeSlider from "../ThemeSlider/ThemeSlider";
+import CountUp from "react-countup";
 
 interface CategoryData {
   name: string;
@@ -18,12 +20,18 @@ interface TimelineProps {
 const Timeline: React.FC<TimelineProps> = ({ categories }) => {
   const [activeCategoryIndex, setActiveCategoryIndex] = useState<number>(0);
   const totalCategories = categories.length;
-  const [events, setEvents] = useState<IEvent>(event);
+  const [events] = useState<IEvent>(event);
   const currentCategory = categories[activeCategoryIndex];
   const pointRefs = useRef<HTMLDivElement[]>([]);
   const anglesRef = useRef<{ [key: number]: number }>({});
   const tweenRefs = useRef<{ [index: number]: gsap.core.Tween }>({});
   const [pageWidth, setPageWidth] = useState(window.innerWidth);
+  const firstYear = categories[activeCategoryIndex].years[0];
+  const secondYear =
+    categories[activeCategoryIndex].years[
+      categories[activeCategoryIndex].years.length - 1
+    ];
+  const [prevFirstYear, setPrevFirstYear] = useState(firstYear);
 
   useEffect(() => {
     const handleResize = () => {
@@ -38,17 +46,16 @@ const Timeline: React.FC<TimelineProps> = ({ categories }) => {
   }, []);
 
   const handleNext = () => {
-    setActiveCategoryIndex((prevIndex) => (prevIndex + 1) % totalCategories);
+    setActiveCategoryIndex((prevIndex) =>
+      prevIndex + 1 < totalCategories ? prevIndex + 1 : 0
+    );
   };
 
   const handlePrev = () => {
     setActiveCategoryIndex((prevIndex) =>
-      prevIndex === 0 ? totalCategories - 1 : prevIndex - 1
+      prevIndex > 0 ? prevIndex - 1 : totalCategories - 1
     );
   };
-
-  console.log("Active Category", currentCategory.name);
-  console.log("Events", events[currentCategory.name]);
 
   const animatePointsPosition = () => {
     const containerSize = 530;
@@ -102,13 +109,12 @@ const Timeline: React.FC<TimelineProps> = ({ categories }) => {
     animatePointsPosition();
   }, [activeCategoryIndex, totalCategories]);
 
-  const firstYear = categories[activeCategoryIndex].years[0];
-  const secondYear =
-    categories[activeCategoryIndex].years[
-      categories[activeCategoryIndex].years.length - 1
-    ];
-
-  console.log(currentCategory.name.toLowerCase());
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setPrevFirstYear(firstYear);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, [firstYear]);
 
   return (
     <div className="timeline">
@@ -119,8 +125,26 @@ const Timeline: React.FC<TimelineProps> = ({ categories }) => {
             <span>даты</span>
           </h1>
           <div className="year_container">
-            <span className="year">{firstYear}</span>
-            <span className="year">{secondYear}</span>
+            <span className="year">
+              <CountUp
+                separator=""
+                key={`first-${firstYear}`}
+                start={prevFirstYear}
+                end={firstYear}
+                duration={2}
+                redraw
+              />
+            </span>
+            <span className="year">
+              <CountUp
+                separator=""
+                key={`second-${secondYear}`}
+                start={prevFirstYear}
+                end={secondYear}
+                duration={2}
+                redraw
+              />
+            </span>
           </div>
 
           {pageWidth > 820 ? (
@@ -179,7 +203,6 @@ const Timeline: React.FC<TimelineProps> = ({ categories }) => {
               years={currentCategory.years}
               events={events}
               selectedTheme={currentCategory.name}
-              pagination={false}
             />
           </div>
         </>
@@ -193,6 +216,17 @@ const Timeline: React.FC<TimelineProps> = ({ categories }) => {
             />
           </div>
           <div className="indent">
+            <ThemeSlider
+              categories={categories}
+              onSelectTheme={(selectedCategory) => {
+                const index = categories.findIndex(
+                  (theme) => theme.name === selectedCategory.name
+                );
+                if (index !== -1) {
+                  setActiveCategoryIndex(index);
+                }
+              }}
+            />
             <span className="counter">
               0{activeCategoryIndex + 1}/0{totalCategories}
             </span>
@@ -208,4 +242,5 @@ const Timeline: React.FC<TimelineProps> = ({ categories }) => {
     </div>
   );
 };
+
 export default Timeline;

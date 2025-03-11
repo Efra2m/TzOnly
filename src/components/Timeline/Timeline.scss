@@ -122,10 +122,6 @@
     }
   }
 
-  &:last-child {
-    color: var(--fuschia);
-  }
-
   @media (max-width: 1700px) {
     font-size: 150px;
   }
@@ -231,7 +227,7 @@
 .indent {
   position: fixed;
   width: 100%;
-  top: 530px;
+  top: 510px;
   right: 21px;
   padding: 10px;
   text-align: center;
@@ -360,9 +356,9 @@
   .timeline-container::after {
     content: "";
     position: absolute;
-    top: 293px;
+    top: 323px;
     left: 20px;
-    width: calc(100% - 40px);
+    width: calc(100% - 50px);
     border-top: 1px solid #c7cdd9;
   }
 
@@ -380,16 +376,16 @@
     letter-spacing: 0%;
     width: 123px;
     height: 48px;
-    transform: translate(-10%, 240%);
+    transform: translate(-10%, 310%);
   }
 
   .active-point {
-    transform: translate(-1640%, -250%);
+    transform: translate(-1640%, -130%);
   }
 
   .year_container {
     position: absolute;
-    transform: translate(-30%, -50%);
+    transform: translate(-30%, 100%);
     display: flex;
     align-items: center;
     z-index: 2;

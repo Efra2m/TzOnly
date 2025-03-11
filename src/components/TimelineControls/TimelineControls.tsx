@@ -7,18 +7,19 @@ interface TimelineControlsProps {
   totalCategories: number;
 }
 
-function TimelineControls({
+const TimelineControls: React.FC<TimelineControlsProps> = ({
   handlePrev,
   handleNext,
   activeCategoryIndex,
   totalCategories,
-}: TimelineControlsProps) {
+}) => {
   return (
     <div className="timeline-controls">
       <button
         className="prev-button"
         onClick={handlePrev}
         disabled={activeCategoryIndex === 0}
+        aria-label="Предыдущая категория"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -55,6 +56,6 @@ function TimelineControls({
       </button>
     </div>
   );
-}
+};
 
 export default TimelineControls;

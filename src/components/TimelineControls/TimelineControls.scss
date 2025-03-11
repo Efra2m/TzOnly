@@ -2,12 +2,13 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding-left: 82px;
+  padding-left: 75px;
+  z-index: 2;
 
   span {
     font-size: 14px;
     line-height: 18px;
-    color: var(--black-blue);
+    color: #42567a;
     margin-right: 10px;
   }
 

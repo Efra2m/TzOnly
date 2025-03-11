@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import SwiperCore, { Navigation, Pagination } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper-bundle.css";
@@ -6,9 +6,15 @@ import "./Slider.scss";
 
 SwiperCore.use([Navigation, Pagination]);
 
+export interface IEvent {
+  [theme: string]: {
+    [year: number]: string;
+  };
+}
+
 interface TimelineSliderProps {
   years: number[];
-  events: Record<string, Record<number, string>>;
+  events: IEvent;
   selectedTheme: string;
   pagination?: boolean;
   navigation?: boolean;
@@ -18,99 +24,100 @@ const Slider: React.FC<TimelineSliderProps> = ({
   years,
   events,
   selectedTheme,
-  pagination = true,
   navigation = true,
 }) => {
-  const currentEvents = events[selectedTheme] || {};
-  const swiperRef = useRef<any>(null);
+  const [swiperInstance, setSwiperInstance] = useState<SwiperCore | null>(null);
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
 
   const handleNext = () => {
-    if (swiperRef.current) {
-      swiperRef.current.swiper.slideNext();
+    if (swiperInstance && !isEnd) {
+      swiperInstance.slideNext();
     }
   };
 
   const handlePrev = () => {
-    if (swiperRef.current) {
-      swiperRef.current.swiper.slidePrev();
+    if (swiperInstance && !isBeginning) {
+      swiperInstance.slidePrev();
     }
+  };
+
+  const onSlideChangeHandler = (swiper: SwiperCore) => {
+    setIsBeginning(swiper.isBeginning);
+    setIsEnd(swiper.isEnd);
   };
 
   return (
     <div className="timeline-slider">
-      {navigation && (
-        <div className="button-container">
-          <button
-            className="customPrev"
-            onClick={handlePrev}
-            style={{ visibility: isBeginning ? "hidden" : "visible" }}
-            disabled={isBeginning}
-          >
-            <img
-              className="flippedArrow"
-              src={process.env.PUBLIC_URL + "/img/Vector2.svg"}
-              alt="Back"
-            />
-          </button>
-          <button
-            className="customNext"
-            onClick={handleNext}
-            style={{ visibility: isEnd ? "hidden" : "visible" }}
-            disabled={isEnd}
-          >
-            <img src={process.env.PUBLIC_URL + "/img/Vector2.svg"} alt="Next" />
-          </button>
-        </div>
-      )}
+      <div className="button-container">
+        {navigation && (
+          <>
+            <button
+              className="customPrev"
+              onClick={handlePrev}
+              style={{ visibility: isBeginning ? "hidden" : "visible" }}
+              disabled={isBeginning}
+            >
+              <img
+                className="flippedArrow"
+                src={process.env.PUBLIC_URL + "/img/Vector2.svg"}
+                alt="Back"
+              />
+            </button>
+            <button
+              className="customNext"
+              onClick={handleNext}
+              style={{ visibility: isEnd ? "hidden" : "visible" }}
+              disabled={isEnd}
+            >
+              <img
+                src={process.env.PUBLIC_URL + "/img/Vector2.svg"}
+                alt="Next"
+              />
+            </button>
+          </>
+        )}
+      </div>
       <Swiper
-        ref={swiperRef}
+        key={selectedTheme}
+        onSwiper={(swiper) => {
+          setSwiperInstance(swiper);
+          setIsBeginning(swiper.isBeginning);
+          setIsEnd(swiper.isEnd);
+        }}
+        onSlideChange={onSlideChangeHandler}
         direction="horizontal"
-        slidesPerView={window.innerWidth < 820 ? 1 : 3}
-        slidesPerGroup={window.innerWidth < 820 ? 1 : 3}
+        slidesPerView={1}
+        slidesPerGroup={1}
         breakpoints={{
           1200: {
             slidesPerView: 3,
+            slidesPerGroup: 3,
             spaceBetween: 70,
           },
           820: {
             slidesPerView: 2,
+            slidesPerGroup: 2,
             spaceBetween: 110,
           },
           650: {
             slidesPerView: 3,
+            slidesPerGroup: 3,
             spaceBetween: 50,
           },
           512: {
             slidesPerView: 2,
+            slidesPerGroup: 2,
             spaceBetween: 50,
           },
         }}
         loop={false}
-        pagination={
-          pagination
-            ? {
-                clickable: true,
-                renderBullet: (index, className) => {
-                  if (index >= 3) return "";
-                  return `<span class="${className}"></span>`;
-                },
-              }
-            : false
-        }
-        allowSlideNext={!isEnd}
-        onSlideChange={(swiper) => {
-          setIsBeginning(swiper.isBeginning);
-          setIsEnd(swiper.isEnd);
-        }}
-        onSwiper={(swiper) => {
-          setIsBeginning(swiper.isBeginning);
-          setIsEnd(swiper.isEnd);
-        }}
       >
         {years.map((year) => {
-          const eventForYear = currentEvents[year] || "Нет событий";
+          const eventForYear =
+            events[selectedTheme] && events[selectedTheme][year]
+              ? events[selectedTheme][year]
+              : "Нет событий";
           return (
             <SwiperSlide key={year}>
               <h3>{year}</h3>
