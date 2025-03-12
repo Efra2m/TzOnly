@@ -32,6 +32,7 @@ const Timeline: React.FC<TimelineProps> = ({ categories }) => {
       categories[activeCategoryIndex].years.length - 1
     ];
   const [prevFirstYear, setPrevFirstYear] = useState(firstYear);
+  const [prevSecondYear, setPrevSecondYear] = useState(secondYear);
 
   useEffect(() => {
     const handleResize = () => {
@@ -116,6 +117,13 @@ const Timeline: React.FC<TimelineProps> = ({ categories }) => {
     return () => clearTimeout(timer);
   }, [firstYear]);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setPrevSecondYear(secondYear);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, [secondYear]);
+
   return (
     <div className="timeline">
       <div className="timeline-container">
@@ -139,7 +147,7 @@ const Timeline: React.FC<TimelineProps> = ({ categories }) => {
               <CountUp
                 separator=""
                 key={`second-${secondYear}`}
-                start={prevFirstYear}
+                start={prevSecondYear}
                 end={secondYear}
                 duration={2}
                 redraw
