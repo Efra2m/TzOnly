@@ -3,14 +3,9 @@ import SwiperCore, { Navigation, Pagination } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper-bundle.css";
 import "./Slider.scss";
+import { IEvent } from "../Timeline/eventsData";
 
 SwiperCore.use([Navigation, Pagination]);
-
-export interface IEvent {
-  [theme: string]: {
-    [year: number]: string;
-  };
-}
 
 interface TimelineSliderProps {
   years: number[];
@@ -92,7 +87,7 @@ const Slider: React.FC<TimelineSliderProps> = ({
         breakpoints={{
           1200: {
             slidesPerView: 3,
-            slidesPerGroup: 3,
+            slidesPerGroup: 1,
             spaceBetween: 70,
           },
           820: {
@@ -112,6 +107,7 @@ const Slider: React.FC<TimelineSliderProps> = ({
           },
         }}
         loop={false}
+        allowSlideNext={!isEnd}
       >
         {years.map((year) => {
           const eventForYear =
